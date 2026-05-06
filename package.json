@@ -33,8 +33,7 @@
   "jest": {
     "testEnvironment": "node",
     "testMatch": ["**/__tests__/**/*.test.js"],
-    "setupFilesAfterEnv": ["./src/__tests__/setup.js"],
-    "globalSetup": "./src/__tests__/setup.js"
+    "setupFilesAfterEnv": ["./src/__tests__/setup.js"]
   },
   "devDependencies": {
     "jest": "^30.3.0",

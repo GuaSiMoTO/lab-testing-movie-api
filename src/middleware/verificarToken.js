@@ -5,7 +5,7 @@ const verificarToken = (req, res, next) => {
   const authHeader = req.headers.authorization
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return next(new AppError('Token no proporcionado', 401))
+    return res.status(401).json({ error: 'Token no proporcionado' })
   }
 
   const token = authHeader.split(' ')[1]

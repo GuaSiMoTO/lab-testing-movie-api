@@ -1,17 +1,17 @@
 const bcrypt = require('bcrypt')
-const jwt = requier('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 const pool = require('../config/db')
 
 const crearUsuario = async ({ nombre = 'Test User', email = 'test@test.com', password = 'pass123', rol = 'usuario'} = {}) => {
     const password_hash = await bcrypt.hash(password, 10)
-    const { row } = await pool.query(
+    const { rows } = await pool.query(
         `INSERT INTO usuarios (nombre, email, password_hash, rol)
         VALUES ($1, $2, $3, $4)
         RETURNING id, nombre, email, rol`,
         [nombre, email, password_hash, rol]
     )
 
-    const usuario = row[0]
+    const usuario = rows[0]
     const token = jwt.sign(
         {id: usuario.id, email: usuario.email, rol: usuario.rol },
         process.env.JWT_SECRET || 'test-secret',
@@ -23,7 +23,7 @@ const crearUsuario = async ({ nombre = 'Test User', email = 'test@test.com', pas
 const crearPelicula = async ({ titulo = 'Pelicula Test', anio = 2024, nota = 8.0 } = {})=>{
     const { rows } = await pool.query (
         `INSERT INTO peliculas (titulo, anio, nota)
-        VALLUES ($1, $2, $3) RETURNING *`,
+        VALUES ($1, $2, $3) RETURNING *`,
         [titulo, anio, nota]
     )
     return rows[0]

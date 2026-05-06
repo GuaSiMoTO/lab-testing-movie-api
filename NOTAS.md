@@ -23,4 +23,22 @@ Ese warning:
 
 "setupFilesAfterEnv: ["./src/__tests__/setup.js"]"
 
+## PRoblema en package.json
 
+Estás usando setup.js como globalSetup, y eso está MAL para lo que quieres hacer.
+
+En config package.json:
+
+"globalSetup: "./src/__tests__/setup.js" ❌"
+
+
+beforeAll NO funciona en globalSetup
+
+Porque:
+
+    . globalSetup = se ejecuta fuera del entorno de Jest
+    . beforeAll = solo funciona dentro de tests
+
+Corrección:
+
+"setupFilesAfterEnv: ["./src/__tests__/setup.js"]"

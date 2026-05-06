@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 
 // Creamos las tablas si no existen, aunque ya hice la copia del schema de la BD original
-beforeaAll (async ()=>{ 
+beforeAll (async ()=>{ 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS usuarios (
         id SERIAL PRIMARY KEY,
