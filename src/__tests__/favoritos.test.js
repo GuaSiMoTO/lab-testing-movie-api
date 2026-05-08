@@ -4,6 +4,11 @@ const request = require("supertest");
 const app = require("../../index");
 const { crearUsuario, crearPelicula } = require("./helpers");
 
+jest.mock('bcrypt', () => ({
+  hash: jest.fn().mockResolvedValue('hash_falso'),
+  compare: jest.fn().mockResolvedValue(true),
+}))
+
 describe("Favoritos", () => {
   describe("POST /api/favoritos/:peliculaId", () => {
     it("debe añadir una película a favoritos (201)", async () => {
@@ -11,7 +16,7 @@ describe("Favoritos", () => {
       const pelicula = await crearPelicula();
 
       const res = await request(app)
-        .post(`/api/favooritos/${pelicula.id}`)
+        .post(`/api/favoritos/${pelicula.id}`)
         .set("Authorization", `Bearer ${token}`);
 
       expect(res.status).toBe(201);
@@ -22,7 +27,7 @@ describe("Favoritos", () => {
     it("debe devolver 401 sin token", async () => {
       const { token } = await crearUsuario();
 
-      const res = await request(app).post(`/api/favoritos/${pelicula.id}`);
+      const res = await request(app).post(`/api/favoritos/1`);
 
       expect(res.status).toBe(401);
     });
@@ -32,24 +37,24 @@ describe("Favoritos", () => {
 
       const res = await request(app)
         .post("/api/favoritos/99999")
-        .get("Authorization", `Bearer ${token}`);
+        .set("Authorization", `Bearer ${token}`);
 
       expect(res.status).toBe(404);
     });
 
     it("debe devolver 409 si la película ya está en favoritos", async () => {
       const { token, usuario } = await crearUsuario();
-      const pelicula = await crearPeliucla();
+      const pelicula = await crearPelicula();
 
       //esta es la primera vez que la añadimos a favoritos
       await request(app)
         .post(`/api/favoritos/${pelicula.id}`)
-        .get("Authorization", `Bearer ${token}`);
+        .set("Authorization", `Bearer ${token}`);
 
       //segunda vez que intentamos añadir a favoritos, debe lanzar error 409
       const res = await request(app)
-        .post(`/api/favoritos/${palicula.id}`)
-        .get("Authorization", `Bearer ${token}`);
+        .post(`/api/favoritos/${pelicula.id}`)
+        .set("Authorization", `Bearer ${token}`);
 
       expect(res.status).toBe(409);
     });
@@ -63,12 +68,12 @@ describe("Favoritos", () => {
       // primero añadimos una película
       await request(app)
         .post(`/api/favoritos/${pelicula.id}`)
-        .get("Authorization", `Bearer ${token}`);
+        .set("Authorization", `Bearer ${token}`);
 
       //ahora eliminamos esa película y esta si la recogemos en una variable
       const res = await request(app)
-        .post(`/api/favoritos/${pelicula.id}`)
-        .get("Authorization", `Bearer ${token}`);
+        .delete(`/api/favoritos/${pelicula.id}`)
+        .set("Authorization", `Bearer ${token}`);
 
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty("ok", true);

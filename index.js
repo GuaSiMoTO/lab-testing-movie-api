@@ -24,8 +24,8 @@ app.use('/api/peliculas', peliculasRouter)
 app.use('/api', estadisticasRouter)
 app.use('/api/auth', authRouter)
 
-app.use((req, res) => {
-  res.status(404).json({ error: `Ruta ${req.method} ${req.url} no encontrada` })
+app.use((err, req, res, next) => {
+  res.status(err.statusCode || 500).json({ error: err.message })
 })
 
 // sin llamar a listen. Para testear. IMPORTANTE! para no tocar la BD original

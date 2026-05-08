@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const pool = require('../config/db')
 
+
 const crearUsuario = async ({ nombre = 'Test User', email = 'test@test.com', password = 'pass123', rol = 'usuario'} = {}) => {
     const password_hash = await bcrypt.hash(password, 10)
     const { rows } = await pool.query(

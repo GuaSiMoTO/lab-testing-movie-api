@@ -17,7 +17,8 @@ pool.connect((err, client, release) => {
     throw err
   }
   release()
-  console.log('Conectado a PostgreSQL - Base de datos:', process.env.DB_NAME)
+  console.log('Conectado a PostgreSQL - Base de datos:', 
+  process.env.NODE_ENV === 'test' ? process.env.DB_NAME_TEST : process.env.DB_NAME)
 })
 
 module.exports = pool
